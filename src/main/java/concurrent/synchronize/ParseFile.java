@@ -1,6 +1,7 @@
 package concurrent.synchronize;
 
 import java.io.*;
+import java.util.function.Predicate;
 
 public class ParseFile {
     private File file;
@@ -13,11 +14,13 @@ public class ParseFile {
         return file;
     }
 
-    public synchronized String getContent() {
+    public synchronized String getContent(Predicate<Integer> condition) {
         StringBuilder builder = new StringBuilder();
         try (InputStream i = new FileInputStream(file)) {
             for (int data = -2; data != -1; data = i.read()) {
-                builder.append(data);
+                if (condition.test(data)) {
+                    builder.append(data);
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -26,17 +29,11 @@ public class ParseFile {
     }
 
     public synchronized String getContentWithoutUnicode() {
-        StringBuilder builder = new StringBuilder();
-        try (InputStream i = new FileInputStream(file)) {
-            for (int data = -2; data != -1; data = i.read()) {
-                if (data < 0x80) {
-                    builder.append(data);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return builder.toString();
+        return getContent(data -> data < 0x80);
+    }
+
+    public synchronized String getGeneralContent() {
+        return getContent(data -> true);
     }
 
     public synchronized void saveContent(String content) {
