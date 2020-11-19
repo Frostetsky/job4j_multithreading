@@ -20,22 +20,22 @@ public class UserStore implements Store {
     }
 
     @Override
-    public void add(User user) {
+    public synchronized void add(User user) {
         users.putIfAbsent(user.getId(), user);
     }
 
     @Override
-    public boolean update(User user) {
+    public synchronized boolean update(User user) {
         return users.replace(user.getId(), user) != null;
     }
 
     @Override
-    public boolean delete(User user) {
+    public synchronized boolean delete(User user) {
         return users.remove(user.getId()) != null;
     }
 
     @Override
-    public User findByID(int id) {
+    public synchronized User findByID(int id) {
         return users.get(id);
     }
 
