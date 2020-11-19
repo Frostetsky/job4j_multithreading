@@ -1,11 +1,11 @@
 package concurrent.threads;
 
 public class ConsoleProgress implements Runnable {
-    private final String[] symbols = {".", "..", "..."};
-    private int index = 0;
 
     @Override
     public void run() {
+        String[] symbols = {".", "..", "..."};
+        int index = 0;
         while (!Thread.currentThread().isInterrupted()) {
             System.out.print("\rLoading " + symbols[index]);
             index = (index + 1) % symbols.length;
